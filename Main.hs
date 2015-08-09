@@ -1,6 +1,9 @@
 module Main where
 
+import Data.Maybe (maybeToList)
 import System.Environment
+
+import IO
 
 data Arguments =
     Arguments {
@@ -14,7 +17,9 @@ main :: IO ()
 main = do
   parameters <- getArgs
   let arguments = parseParameters parameters
-  putStrLn $ show arguments
+  json <- mapM readJsonGame $ files arguments
+  let games = map fromJsonGame $ concat $ map maybeToList json
+  putStrLn $ show games
 
 parseParameters :: [String] -> Arguments
 parseParameters = parseParametersHelper (Arguments [] Nothing Nothing [])
