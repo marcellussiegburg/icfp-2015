@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module IO where
 
-import Prelude hiding (readFile)
+import Prelude hiding (readFile, putStrLn)
 import Control.Monad (mzero)
 import Data
 import Data.Map.Lazy hiding (foldl, map, maximum, member, size)
@@ -59,6 +59,9 @@ instance ToJSON JsonSolution where
 readJsonGame :: FilePath -> IO (Maybe JsonGame)
 readJsonGame file = readFile file >>= return . decode
 
+printJsonSolution :: JsonSolution -> IO ()
+printJsonSolution = putStrLn . encode
+
 fromJsonGame :: JsonGame -> Game
 fromJsonGame json =
     let size' = Size (width' json) (height' json)
@@ -85,4 +88,3 @@ fromCell pivot cell = (x cell - x pivot, y cell - y pivot)
 
 emptyBoard :: Size -> Board
 emptyBoard size = foldl (\m y -> foldl (\m' x -> insert (Cell x y) Empty m') m [0..w size - 1]) empty [0..h size - 1]
-
