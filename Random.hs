@@ -2,6 +2,9 @@ module Random where
 
 import Data.Bits
 
+randomOrder :: [a] -> Int -> [a]
+randomOrder reorder seed = map (\r -> reorder !! (r `mod` (length reorder))) $ randomNumbers seed
+
 randomNumbers :: Int -> [Int]
 randomNumbers seed = map mask $ randomNumberSequence [seed..]
 

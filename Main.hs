@@ -3,7 +3,10 @@ module Main where
 import Data.Maybe (maybeToList)
 import System.Environment
 
+import Data
 import IO
+import Random
+import Solver
 
 data Arguments =
     Arguments {
@@ -19,7 +22,9 @@ main = do
   let arguments = parseParameters parameters
   json <- mapM readJsonGame $ files arguments
   let games = map fromJsonGame $ concat $ map maybeToList json
-  putStrLn $ show games
+      randomSeeds = map (\g -> map (\r -> (g, randomOrder (units g) r)) $ sourceSeeds g) games
+      solutions = map (map (\(g, s) -> topDownRun (board g) s)) randomSeeds
+  putStrLn $ show $ solutions
 
 parseParameters :: [String] -> Arguments
 parseParameters = parseParametersHelper (Arguments [] Nothing Nothing [])
@@ -33,3 +38,4 @@ parseParametersHelper arguments (param : paramV : parameters) =
       "-t" -> parseParametersHelper (arguments { timeLimit = Just $ read paramV }) parameters
       "-m" -> parseParametersHelper (arguments { memoryLimit = Just $ read paramV }) parameters
       "-p" -> parseParametersHelper (arguments { phrases = paramV : phrases arguments }) parameters
+

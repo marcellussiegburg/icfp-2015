@@ -76,16 +76,12 @@ transformUnit width json =
         h' = maximum (map y $ member' json) + 1
     in Unit {
          member = map (fromCell (pivot' json)) $ member' json,
-         unitSize = Size w' h',
          pivot = Cell ((width - w') `div` 2 + (x $ pivot' json))
                       (y $ pivot' json)
        }
 
 fromCell :: Cell -> Cell -> Position
 fromCell pivot cell = (x cell - x pivot, y cell - y pivot)
-
-fillCell :: Board -> Cell -> Board
-fillCell board cell = insert cell Full board
 
 emptyBoard :: Size -> Board
 emptyBoard size = foldl (\m y -> foldl (\m' x -> insert (Cell x y) Empty m') m [0..w size - 1]) empty [0..h size - 1]

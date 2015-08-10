@@ -5,13 +5,26 @@ import Data
 data Direction = East | SouthEast | SouthWest | West | NorthWest | NorthEast deriving Show
 
 rotateUnitRight :: Unit -> Unit
-rotateUnitRight unit = Unit (pivot unit) $ map rotatePositionRight $ member unit
+rotateUnitRight unit =
+    Unit {
+      pivot = pivot unit,
+      member = map rotatePositionRight $ member unit}
 
 rotateUnitLeft :: Unit -> Unit
-rotateUnitLeft unit = Unit (pivot unit) $ map rotatePositionLeft $ member unit
+rotateUnitLeft unit = Unit { pivot = pivot unit, member = map rotatePositionLeft $ member unit }
 
-tryPlaceUnit :: Board -> Unit -> Position -> Maybe Board
-tryPlaceUnit = undefined
+canPlaceUnit :: Board -> Unit -> Bool
+canPlaceUnit board unit =
+    let cells = getCellsOnBoard unit
+    in canPlaceCells board cells
+
+tryPlaceUnit :: Board -> Unit -> Maybe Board
+tryPlaceUnit board unit =
+    let cells = getCellsOnBoard unit
+        members = foldl fillCell board cells
+    in if canPlaceCells board cells
+       then Just members
+       else Nothing
 
 rotatePositionRight :: Position -> Position
 rotatePositionRight p = foldl move (0, 0) $ map rotateDirectionRight $ getPathToPivot p
@@ -67,6 +80,17 @@ move p direction =
       SouthWest -> moveSouthWest p
       NorthEast -> moveNorthEast p
       NorthWest -> moveNorthWest p
+
+command :: Unit -> Command -> Unit
+command unit direction =
+    let moveTo = fromPosition . move (toPosition $ pivot unit)
+    in case direction of
+         M E -> unit { pivot = moveTo East }
+         M W -> unit { pivot = moveTo West }
+         M SE -> unit { pivot = moveTo SouthEast }
+         M SW -> unit { pivot = moveTo SouthWest }
+         T CounterClockwise -> rotateUnitLeft unit
+         T Clockwise -> rotateUnitRight unit
 
 moveEast :: Position -> Position
 moveEast (x, y) = (x + 1, y)
