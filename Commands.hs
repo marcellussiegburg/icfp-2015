@@ -4,6 +4,12 @@ import Data
 
 data Direction = East | SouthEast | SouthWest | West | NorthWest | NorthEast deriving Show
 
+tryPerformCommands :: Board -> Unit -> [Command] -> Maybe Board
+tryPerformCommands board unit [] = Just board
+tryPerformCommands board unit (c : cs) = do
+  board' <- tryPlaceUnit board unit
+  tryPerformCommands board' (command unit c) cs
+
 rotateUnitRight :: Unit -> Unit
 rotateUnitRight unit =
     Unit {

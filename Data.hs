@@ -22,11 +22,11 @@ type Board = Map Cell State
 data Unit = Unit {
   pivot :: Cell,
   member :: [Position]
- } deriving Show
+ } deriving (Show, Eq)
 
-data Command = M Move | T Turn deriving Show
-data Move = E | W | SE | SW deriving Show
-data Turn = Clockwise | CounterClockwise deriving Show
+data Command = M Move | T Turn deriving (Show, Eq)
+data Move = E | W | SE | SW deriving (Show, Eq)
+data Turn = Clockwise | CounterClockwise deriving (Show, Eq)
 
 fromPosition :: Position -> Cell
 fromPosition p = Cell (fst p) (snd p)

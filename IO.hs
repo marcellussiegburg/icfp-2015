@@ -59,7 +59,7 @@ instance ToJSON JsonSolution where
 readJsonGame :: FilePath -> IO (Maybe JsonGame)
 readJsonGame file = readFile file >>= return . decode
 
-printJsonSolution :: JsonSolution -> IO ()
+printJsonSolution :: [JsonSolution] -> IO ()
 printJsonSolution = putStrLn . encode
 
 fromJsonGame :: JsonGame -> Game
